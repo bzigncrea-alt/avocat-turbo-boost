@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,12 +18,12 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: "Accueil", href: "#accueil" },
-    { name: "Le Cabinet", href: "#cabinet" },
-    { name: "Expertises", href: "#expertises" },
-    { name: "Équipe", href: "#equipe" },
-    { name: "Témoignages", href: "#temoignages" },
-    { name: "Contact", href: "#contact" },
+    { name: "Accueil", href: isHomePage ? "#accueil" : "/", isAnchor: isHomePage },
+    { name: "Le Cabinet", href: isHomePage ? "#cabinet" : "/#cabinet", isAnchor: isHomePage },
+    { name: "Expertises", href: isHomePage ? "#expertises" : "/#expertises", isAnchor: isHomePage },
+    { name: "Équipe", href: "/equipe", isAnchor: false },
+    { name: "Actualités", href: "/actualites", isAnchor: false },
+    { name: "Contact", href: isHomePage ? "#contact" : "/#contact", isAnchor: isHomePage },
   ];
 
   return (
@@ -34,7 +37,7 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20 md:h-24 px-4 md:px-8">
           {/* Logo */}
-          <a href="#accueil" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 md:w-12 md:h-12 border-2 border-primary flex items-center justify-center">
               <span className="font-serif text-primary text-xl md:text-2xl font-bold">D</span>
             </div>
@@ -46,18 +49,28 @@ const Header = () => {
                 Avocats au Barreau de Paris
               </p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="gold-underline text-sm text-foreground/80 hover:text-foreground tracking-wide transition-colors duration-300"
-              >
-                {link.name}
-              </a>
+              link.isAnchor ? (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="gold-underline text-sm text-foreground/80 hover:text-foreground tracking-wide transition-colors duration-300"
+                >
+                  {link.name}
+                </a>
+              ) : (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="gold-underline text-sm text-foreground/80 hover:text-foreground tracking-wide transition-colors duration-300"
+                >
+                  {link.name}
+                </Link>
+              )
             ))}
           </nav>
 
@@ -86,14 +99,25 @@ const Header = () => {
       >
         <nav className="flex flex-col p-6 gap-4">
           {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-foreground/80 hover:text-primary py-2 text-lg font-serif transition-colors"
-            >
-              {link.name}
-            </a>
+            link.isAnchor ? (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-foreground/80 hover:text-primary py-2 text-lg font-serif transition-colors"
+              >
+                {link.name}
+              </a>
+            ) : (
+              <Link
+                key={link.name}
+                to={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-foreground/80 hover:text-primary py-2 text-lg font-serif transition-colors"
+              >
+                {link.name}
+              </Link>
+            )
           ))}
           <Button variant="gold" size="lg" className="mt-4">
             Consultation gratuite
